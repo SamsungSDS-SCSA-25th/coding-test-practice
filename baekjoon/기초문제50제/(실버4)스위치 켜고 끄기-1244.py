@@ -17,13 +17,22 @@ for rule in ruleMatrix:
                     #print(f'{switchConditionList=}')
     elif student == 2: # 여자
         for prefix in range(number):
-            if switchConditionList[number-1 - prefix] == switchConditionList[number-1 + prefix]:
-                if switchConditionList[number-1 - prefix] == 0:
-                    switchConditionList[number-1 - prefix] = 1
-                    switchConditionList[number-1 + prefix] = 1
-                elif switchConditionList[number-1 - prefix] == 1:
-                    switchConditionList[number-1 - prefix] = 0
-                    switchConditionList[number-1 + prefix] = 0
+            left = number - 1 - prefix
+            right = number - 1 + prefix
+            # 범위를 벗어나면 중단
+            if left < 0 or right >= switchN:
+                break
+            # 좌우가 다르면 종료
+            if switchConditionList[left] != switchConditionList[right]:
+                break
+            # 좌우가 같으면 로직
+            if switchConditionList[left] == switchConditionList[right]:
+                if switchConditionList[left] == 0:
+                    switchConditionList[left] = 1
+                    switchConditionList[right] = 1
+                elif switchConditionList[left] == 1:
+                    switchConditionList[left] = 0
+                    switchConditionList[right] = 0
 
 
     #print(f'{switchConditionList=}')
