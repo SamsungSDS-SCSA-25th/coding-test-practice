@@ -19,7 +19,7 @@ end = 1
 current_sum = 1
 count = 0
 
-while start <= N:
+while start <= N: # 합은 1부터 시작, 연산하는 순서에 유의!!!
     if current_sum == N:
         count += 1
         current_sum -= start
