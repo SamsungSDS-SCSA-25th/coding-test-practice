@@ -1,17 +1,10 @@
-# 사전을 사용하여 나이순으로 정렬하면, values 순으로 출력하도록함
+# 처음에는 사전형을 생각했으나 너무 구조가 복잡해짐...
+# 결국 그냥 (age, name)을 순서대로 받는 것으로 구상
 
 n = int(input())
-memberList = [ list(input().split()) for i in range(n) ]
+ageNameList = [ tuple(input().split()) for i in range(n) ]
 
-ageNameDict = {}
-for age, name in memberList:
-    ageNameDict.setdefault(int(age), []).append(name)
+ageNameList.sort(key=lambda x: int(x[0]))
 
-ageNameList = [ []* ]
-for age, name in ageNameDict.items():
-    ageNameList.append(age)
-    ageNameList.append(name)
-
-print(ageNameList)
-#ageNameList.sort()
-#print(*ageNameList)
+for age, name in ageNameList:
+    print(age, name)
