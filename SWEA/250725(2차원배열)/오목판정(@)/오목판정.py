@@ -13,70 +13,24 @@ for index in range(t):
     flag = False
     for row in range(n):
         for col in range(n):
-            if matrix[row][col] == 'o':
-                # 가로
-                tempCol, tempCnt = col, 1
-                while True:
-                    if not 0<=tempCol+moveList[0][0]<n:
-                        break
-                    if matrix[row][tempCol+moveList[0][0]] == 'o':
-                        tempCol += 1
-                        tempCnt += 1
-                    elif matrix[row][tempCol+moveList[0][0]] == '.':
-                        break
-                    if tempCnt == 5:
-                        flag = True
-                        break
+            if matrix[row][col] == 'o': # 출발좌표 선택
+                for dx, dy in moveList: # 방향 선택
+                    tempCol, tempRow = col, row
+                    tempCnt = 1
+                    while True: # 한 가지 방향에 대해 5개인지 확인
+                        if not 0<= tempCol + dx <n or not 0<= tempRow + dy <n:
+                            break
 
-                # 세로
-                tempRow, tempCnt = row, 1
-                while True:
-                    if not 0 <= tempRow+moveList[1][1] < n:
-                        break
+                        if matrix[tempRow + dy][tempCol + dx] == 'o':
+                            tempCnt += 1
+                            tempRow += dy
+                            tempCol += dx
+                        elif matrix[tempRow + dy][tempCol + dx] == '.':
+                            break
 
-                    if matrix[tempRow+moveList[1][1]][col] == 'o':
-                        tempRow += 1
-                        tempCnt += 1
-                    elif matrix[tempRow+moveList[1][1]][col] == '.':
-                        break
-
-                    if tempCnt == 5:
-                        flag = True
-                        break
-
-                # 대각선 오른쪽
-                tempRow, tempCol, tempCnt = row, col, 1
-                while True:
-                    if not 0 <= tempRow + moveList[2][1] < n or not 0 <= tempCol + moveList[2][0] < n:
-                        break
-
-                    if matrix[tempRow + moveList[2][1]][tempCol + moveList[2][0]] == 'o':
-                        tempRow += 1
-                        tempCol += 1
-                        tempCnt += 1
-                    elif matrix[tempRow + moveList[2][1]][tempCol + moveList[2][0]] == '.':
-                        break
-
-                    if tempCnt == 5:
-                        flag = True
-                        break
-
-                # 대각선 왼쪽
-                tempRow, tempCol, tempCnt = row, col, 1
-                while True:
-                    if not 0 <= tempRow + moveList[3][1] < n or not 0 <= tempCol + moveList[3][0] < n:
-                        break
-
-                    if matrix[tempRow + moveList[3][1]][tempCol + moveList[3][0]] == 'o':
-                        tempRow += 1
-                        tempCol -= 1
-                        tempCnt += 1
-                    elif matrix[tempRow + moveList[3][1]][tempCol + moveList[3][0]] == '.':
-                        break
-
-                    if tempCnt == 5:
-                        flag = True
-                        break
+                        if tempCnt == 5:
+                            flag = True
+                            break
 
     if flag:
         print(f'#{index+1} YES')
