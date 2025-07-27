@@ -9,7 +9,7 @@ t = int(input())
 
 for index in range(t):
     n, k = map(int, input().split())
-    matrix = [ list(map(int, input().split())) for _ in range(n) ][::-1]
+    matrix = [ list(map(int, input().split())) for _ in range(n) ]
     matrixT = list(map(list, zip(*matrix)))
 
     #print(matrix)
@@ -47,4 +47,3 @@ for index in range(t):
                 tempCnt = 0
 
     print(f'#{index+1} {testCnt}')
-

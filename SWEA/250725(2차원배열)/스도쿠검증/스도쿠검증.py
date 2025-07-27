@@ -4,7 +4,7 @@
 t = int(input())
 
 for index in range(t):
-    puzzleMatrix = [ list(map(int, input().split())) for _ in range(9) ][::-1]
+    puzzleMatrix = [ list(map(int, input().split())) for _ in range(9) ]
     puzzleMatrixT = list(map(list, zip(*puzzleMatrix)))
 
     #print(puzzleMatrix)
