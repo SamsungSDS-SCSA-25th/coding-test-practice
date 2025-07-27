@@ -1,0 +1,49 @@
+# .을 탐색하고 -> X를 놓았을 때 -> 8가지 방향으로 X가 5개 연속하는지 확인
+# 실패
+## X인 곳에서 출발해서 5개 연속인지 봐야함 -> 10x10이므로 완전탐색
+## -> X는 하나 사용할 수 있다고 구현하기
+## 시작점이 .인 경우 놓치고 있었음...
+
+directionList = [(-1, 1), (0, 1), (1, 1),
+                 (-1, 0)        , (1, 0),
+                 (-1, -1), (0, -1), (1, -1)]
+
+matrix = [ list(input().rstrip()) for _ in range(10) ]
+
+flag = False
+for row in range(10):
+    if flag:
+        break
+    for col in range(10):
+        if flag:
+            break
+        if matrix[row][col] == 'X' or matrix[row][col] == '.':
+            for dir in directionList:
+                if matrix[row][col] == 'X': # xChance를 통해 X를 하나 둘 수 있도록 함
+                    xChance = 1
+                elif matrix[row][col] == '.':
+                    xChance = 0
+                tempCnt = 1
+                for dist in range(1, 5):
+                    tempRow = row + dir[1] * dist
+                    tempCol = col + dir[0] * dist
+                    if 0 <= tempRow < 10 and 0 <= tempCol < 10:
+                        #print(f'{dir=} {dist=} {tempRow=}, {tempCol=}')
+                        if matrix[tempRow][tempCol] == 'X':
+                            tempCnt += 1
+                            #print('X')
+                        elif matrix[tempRow][tempCol] == '.':
+                            #print('.')
+                            xChance -= 1
+                            if xChance < 0:  # xChance를 하나 더 써야한다면 다른 길 찾기
+                                break
+                            tempCnt += 1
+                        elif matrix[tempRow][tempCol] == 'O': # 더이상 앞으로 못나감
+                            #print('O')
+                            break
+
+                if tempCnt == 5:
+                    flag = True
+                    break
+
+print(1 if flag else 0)
