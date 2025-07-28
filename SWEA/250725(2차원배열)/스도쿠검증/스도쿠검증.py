@@ -1,5 +1,6 @@
 # 3가지 검증을 하고 나면 스도쿠 해결완료
 # 전치행렬
+### set을 사용하여 중복을 제거하는 방식도 있음
 
 t = int(input())
 
@@ -38,11 +39,11 @@ for index in range(t):
 
     # 3x3행렬에 겹치는 숫자가 있는지?
     if flag:
-        for yStart in range(0, 9, 3):
-            for xStart in range(0, 9, 3):
+        for rowStart in range(0, 9, 3):
+            for colStart in range(0, 9, 3):
                 tempList = [i for i in range(1, 10)]
-                for row in range(yStart, yStart + 3):
-                    for col in range(xStart, xStart + 3):
+                for row in range(rowStart, rowStart + 3):
+                    for col in range(colStart, colStart + 3):
 
                         if puzzleMatrix[row][col] in tempList:
                             tempList.remove(puzzleMatrix[row][col])
