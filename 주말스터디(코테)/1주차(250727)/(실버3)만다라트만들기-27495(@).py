@@ -43,31 +43,32 @@ for middleGoalIdx, middleGoal in enumerate(middleGoalList):
 ### 다시 코드 짜다가 중도 실패
 # 사전형으로 짜기
 
-infoMatrix = [ list(input().split()) for _ in range(9) ]
+nfoMatrix = [list(input().split()) for _ in range(9)]
 
 middleDetailDict = {}
 for row in range(0, 9, 3):
     for col in range(0, 9, 3):
-        if row == 3 and col == 3: # 최종목표 있는 행렬 생략
+        if row == 3 and col == 3:  # 최종목표 있는 행렬 생략
             continue
         tempDetailList = []
         for tempRow in range(3):
             for tempCol in range(3):
-                if tempRow == 1 and tempCol == 1: # 가운데 것은 중간목표
-                    key = infoMatrix[row+tempRow][col+tempCol]
+                if tempRow == 1 and tempCol == 1:  # 가운데 것은 중간목표
+                    key = infoMatrix[row + tempRow][col + tempCol]
                 else:
-                    tempDetailList.append(infoMatrix[row+tempRow][col+tempCol])
+                    tempDetailList.append(infoMatrix[row + tempRow][col + tempCol])
 
         tempDetailList.sort()
         middleDetailDict[key] = tempDetailList
 
-#print(f'{middleDetailDict=}')
+# print(f'{middleDetailDict=}')
 sortedMiddleDetailDict = {}
-for key in sorted(middleDetailDict): # 사전형을 sorted하면 오름차순 keyList 반환
+for key in sorted(middleDetailDict):  # 사전형을 sorted하면 오름차순 keyList 반환
     sortedMiddleDetailDict[key] = middleDetailDict[key]
-#print(f'{sortedMiddleDetailDict=}')
+# print(f'{sortedMiddleDetailDict=}')
 
 for keyIdx, key in enumerate(sortedMiddleDetailDict.keys()):
-    print(f'#{keyIdx+1}. {key}')
+    print(f'#{keyIdx + 1}. {key}')
     for valueIdx, value in enumerate(sortedMiddleDetailDict[key]):
-        print(f'#{keyIdx+1}-{valueIdx+1}. {value}')
+        print(f'#{keyIdx + 1}-{valueIdx + 1}. {value}')
+i
