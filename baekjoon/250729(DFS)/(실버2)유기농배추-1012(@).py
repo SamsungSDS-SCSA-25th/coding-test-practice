@@ -1,7 +1,9 @@
+## OO
 # 배추(노드)가 좌표평면에 존재 -> 인접행렬 사용하는 문제가 아님
 # DFS로 풀이 -> 모두 방문할 때까지 cnt해야 함
 # 중복카운트를 안하는 방법은 방문한 것은 모두 방문처리해서 validate해야 함
 
+''' #1
 moveList = [(1,0), (-1,0), (0,1), (0,-1)]
 
 def dfs(curRow, curCol):
@@ -38,6 +40,45 @@ for index in range(t):
     for row in range(n):
         for col in range(m):
             if cabbageMatrix[row][col] == 1 and not visitedMatrix[row][col]: # (D) 조건을 걸고 DFS 하는 방법도 있음
+                dfs(row, col)
+                wormCnt += 1
+
+    print(wormCnt)
+'''
+
+#2
+
+moveList = [(1,0), (-1,0), (0,1), (0,-1)]
+
+def dfs(curRow, curCol):
+    global visitedMatrix
+    visitedMatrix[curRow][curCol] = True
+
+    for dx, dy in moveList:
+        nxtRow, nxtCol = curRow+dy, curCol+dx
+        if 0<=nxtRow<n and 0<=nxtCol<m and not visitedMatrix[nxtRow][nxtCol]:
+            dfs(nxtRow, nxtCol)
+
+
+t = int(input())
+for index in range(t):
+    m, n, k = map(int, input().split())
+    cabbageInfoList = [ tuple(map(int, input().split())) for _ in range(k) ]
+    cabbageMatrix = [ [0]*m for _ in range(n) ]
+    for xy in cabbageInfoList:
+        row, col = xy[1], xy[0] # 순서유의
+        cabbageMatrix[row][col] = 1
+    # print(cabbageMatrix)
+    visitedMatrix = [[False] * m for _ in range(n)]
+    for row in range(n):
+        for col in range(m):
+            if cabbageMatrix[row][col] == 0:
+                visitedMatrix[row][col] = True
+
+    wormCnt = 0
+    for row in range(n):
+        for col in range(m):
+            if cabbageMatrix[row][col] == 1 and not visitedMatrix[row][col]:
                 dfs(row, col)
                 wormCnt += 1
 
