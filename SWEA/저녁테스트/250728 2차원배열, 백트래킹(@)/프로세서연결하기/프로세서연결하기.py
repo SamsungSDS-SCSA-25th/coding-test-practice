@@ -6,7 +6,7 @@ t = int(input())
 # 북,동,남,서
 dx = [0, 1, 0, -1]
 dy = [1, 0, -1, 0]
-
+'''
 for index in range(t):
     n = int(input())
     matrix = [ list(map(int, input().split())) for _ in range(n) ]
@@ -18,7 +18,4 @@ for index in range(t):
 
                 while True:
                     for
-
-
-
-
+'''
