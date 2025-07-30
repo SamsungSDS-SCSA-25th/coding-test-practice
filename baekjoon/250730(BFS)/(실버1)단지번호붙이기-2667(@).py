@@ -1,6 +1,6 @@
 # bfs, dfs 모두 가능 -> 시간을 줄이기 위해 bfs
 ## (D) 거리를 세는 것이 아니라, apt를 카운트하는 알고리즘이 필요함
-## dfs로도 풀어보자
+## dfs로도 풀어보자 -> 재귀를 생각해야 해서 bfs보다 좀 어려운 것 같음 -> "재귀한 횟수를 더해주면됨" (중요)
 
 from collections import deque
 
@@ -28,6 +28,21 @@ def bfs(startCol, startRow):
     # q를 다 털어낼때까지의 거리를 구해야함
     return aptCnt
 
+def dfs(startCol, startRow):
+    global visitedMatrix, aptMatrix, n
+    visitedMatrix[startRow][startCol] = True
+
+    aptCnt = 1
+    for dx, dy in moveList:
+        nxtCol, nxtRow = startCol + dx, startRow + dy
+        if 0<=nxtCol<n and 0<=nxtRow<n and not visitedMatrix[nxtRow][nxtCol]:
+            visitedMatrix[nxtRow][nxtCol] = True
+            aptCnt += dfs(nxtCol, nxtRow) # (중요) 재귀함수의 값을 더해주면 인접한 1들을 모두 카운트가능
+
+    # 재귀 이후의 결과 -> 현재노드를 기준으로 aptCnt 반환
+    return aptCnt
+
+
 n = int(input())
 aptMatrix = [ list(map(int, list(input()))) for _ in range(n) ]
 # print(aptMatrix)
@@ -41,7 +56,8 @@ aptList = []
 for row in range(n):
     for col in range(n):
         if aptMatrix[row][col] == 1 and not visitedMatrix[row][col]: # (D) 1인 곳이고 아직 방문 안했으면
-            aptCnt = bfs(col, row)
+            # aptCnt = bfs(col, row)
+            aptCnt = dfs(col, row)
             aptList.append(aptCnt)
 
 aptList.sort()
