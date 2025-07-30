@@ -24,15 +24,9 @@ visitedMatrix = [[False]*n for _ in range(m)]
 for _ in range(k):
     x1, y1, x2, y2 = map(int, input().split())
     xyxyList.append([x1, y1, x2, y2])
-
-# True값 채워넣기
-for xyxy in xyxyList:
-    x1, y1, x2, y2 = xyxy[0], xyxy[1], xyxy[2], xyxy[3]
-    for row in range(y1, y2):
+    for row in range(y1, y2): # True값 채워넣기
         for col in range(x1, x2):
-            # print(row, col)
             visitedMatrix[row][col] = True
-# print(visitedMatrix)
 
 cntList = []
 for row in range(m):
@@ -46,5 +40,4 @@ for row in range(m):
 
 cntList.sort()
 print(len(cntList))
-for tempCnt in cntList:
-    print(tempCnt, end=' ')
+print(*cntList)
