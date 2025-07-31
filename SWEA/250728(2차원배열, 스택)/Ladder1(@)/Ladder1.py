@@ -7,6 +7,7 @@
 
 ### 위로 올라가면 startIdx를 전부 살펴볼 필요가 없음 -> todo
 
+''' #1
 t = int(input())
 
 for index in range(t):
@@ -63,3 +64,41 @@ for index in range(t):
                 break
 
     print(f'#{index+1} {twoAnswer}')
+'''
+#2 -> 아래에서 위로 올라가는 것으로 구하기 (시간복잡도를 줄일 수 있음)
+# 사용자정의함수를 정의를 해보자
+
+def up(curCol, curRow):
+    global ladderMatrix
+    return
+
+def left(curCol, curRow):
+    global ladderMatrix
+    return
+
+def right(curCol, curRow):
+    global ladderMatrix
+    return
+
+t = int(input())
+for index in range(t):
+    ladderMatrix = [ list(map(int, input().split())) for _ in range(100) ]
+    # 끝점 찾기 -> 2
+    endRow = 99
+    for col in range(100):
+        if ladderMatrix[endRow][col] == 2:
+            endCol = col
+
+    switchIdx = 0 # 0: up / 1: left / 2: right
+    while True:
+        if row == 0 and ladderMatrix[row][col] == 1:
+            startRow, startCol = row, col
+            break
+
+        if switchIdx == 0:
+
+
+
+
+
+    print(f'#{index+1} ')
