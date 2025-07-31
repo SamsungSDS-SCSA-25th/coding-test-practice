@@ -1,3 +1,4 @@
+# XO
 # 1 : 익은 토마토 / 0 : 안익은 토마토 / -1 : 토마토 없음
 # BFS 최단거리가 모두 익는 날짜
 ## bfs가 여러군데에서 동시에 일어남.. -> 한칸씩 움직일때 마다 bfs 여러 1의 좌표에서 같이하는 로직으로 구현 -> bfs에 인수를 여러개 넣는 방법
@@ -55,19 +56,16 @@ else:
 
 from collections import deque
 
-moveList = [(1,0),(0,1),(-1,0),(0,-1)]
+moveList = [(1,0), (0,1), (-1,0), (0,-1)]
 
-def bfs(startNodeColRowList):
+def bfs(startXYList):
     global visitedMatrix, tomatoMatrix, m, n
-    q = deque(startNodeColRowList)
-    # print(startNodeColRowList)
-    startCol, startRow, startDist = startNodeColRowList[0][0], startNodeColRowList[0][1], startNodeColRowList[0][2]
-    # print(q)
-    visitedMatrix[startRow][startCol] = True
+    q = deque(startXYList)
+    for startCol, startRow, startDist in startXYList:
+        visitedMatrix[startRow][startCol] = True
 
-    maxDist = 0 # 아무것도 익히지 않으면 0
+    maxDist = float('-inf') # bfs 동시다발적일 때, max값으로 거리 관리해야함
     while q:
-        # print(f'{q=}')
         curCol, curRow, curDist = q.popleft()
         maxDist = max(maxDist, curDist)
         for dx, dy in moveList:
@@ -76,29 +74,30 @@ def bfs(startNodeColRowList):
                 q.append((nxtCol, nxtRow, nxtDist))
                 visitedMatrix[nxtRow][nxtCol] = True
 
-    # 익은 토마토로 꽉차면
     return maxDist
+
 
 m, n = map(int, input().split())
 tomatoMatrix = [ list(map(int, input().split())) for _ in range(n) ]
-visitedMatrix = [ [False]*m for _ in range(n) ] # 왔던곳 또 안가기 위함
-
-# 위치가 1인 곳 찾기
-startNodeColRowList = []
+visitedMatrix = [ [False]*m for _ in range(n) ]
+# -1을 True로 만들어주기 + 1인 좌표 저장
+startXYList = []
 for row in range(n):
     for col in range(m):
-        if tomatoMatrix[row][col] == 1:
-            startNodeColRowList.append((col, row, 0)) # 거리도 같이 넣기
-            visitedMatrix[row][col] = True # (D) 방문하면 안됨
-        elif tomatoMatrix[row][col] == -1: # 벽도 True로 만들기 -> 나중에 0을 속아내려고
+        if tomatoMatrix[row][col] == -1:
             visitedMatrix[row][col] = True
-
-dayCnt = bfs(startNodeColRowList)
+        elif tomatoMatrix[row][col] == 1:
+            startXYList.append((col, row, 0))
+# print(startXYList)
+dayCnt = bfs(startXYList)
 
 tomatoFlag = True
-for colVisitedList in visitedMatrix:
-    if 0 in colVisitedList:
-        tomatoFlag = False
+for row in range(n):
+    for col in range(m):
+        if not visitedMatrix[row][col]: # 0인 부분이 하나라도 있다면
+            tomatoFlag = False
+            break
+    if not tomatoFlag:
         break
 
 if tomatoFlag:
