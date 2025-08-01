@@ -55,6 +55,7 @@ for row in range(10):
 
 print(1 if flag else 0)
 '''
+'''
 #2 완전탐색으로 델타검색
 ### 아이디어는 떠오름 하지만 분기에서 실수가 있었음...
 
@@ -97,3 +98,59 @@ for row in range(10):
         break
 
 print(1 if flag else 0)
+'''
+#3 타인들 코드리뷰 -> 내방식대로해도 괜찮을 것 같음
+moveList = [(0,1),(1,1),(1,0),(1,-1)] # 완전탐색이라 4방향 확인
+goMatrix = [ list(input()) for _ in range(10) ]
+
+goFlag = False
+for row in range(10):
+    for col in range(10):
+        if goMatrix[row][col] == 'X':
+            for dx, dy in moveList:
+                xChance = 1 # (D) 변수 위치 유의
+                stoneCnt = 1
+                for dist in range(1, 5):
+                    nxtCol, nxtRow = col + dx*dist, row + dy*dist
+                    if 0 <= nxtCol < 10 and 0 <= nxtRow < 10:
+                        if goMatrix[nxtRow][nxtCol] == '.':
+                            xChance -= 1
+                            stoneCnt += 1
+                        elif goMatrix[nxtRow][nxtCol] == 'X':
+                            stoneCnt += 1
+                    else: # 범위 벗어나면 끝
+                        break
+
+                # print(stoneCnt, xChance)
+                if stoneCnt == 5 and xChance >= 0:
+                    # print('x')
+                    goFlag = True
+                    break
+
+        elif goMatrix[row][col] == '.':
+            for dx, dy in moveList:
+                xChance = 1
+                stoneCnt = 1 # x를 두고 시작한다
+                for dist in range(1, 5):
+                    nxtCol, nxtRow = col + dx * dist, row + dy * dist
+                    if 0 <= nxtCol < 10 and 0 <= nxtRow < 10:
+                        if goMatrix[nxtRow][nxtCol] == '.':
+                            break # .이 나오면 그냥 끝
+                        elif goMatrix[nxtRow][nxtCol] == 'X':
+                            stoneCnt += 1
+                    else: # 범위 벗어나면 끝
+                        break
+
+                if stoneCnt == 5:
+                    goFlag = True
+                    break
+
+        if goFlag:
+            break
+    if goFlag:
+        break
+
+if goFlag:
+    print(1)
+else:
+    print(0)
