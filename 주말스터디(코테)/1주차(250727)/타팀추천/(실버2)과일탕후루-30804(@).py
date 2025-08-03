@@ -1,3 +1,4 @@
+## XO
 # 슬라이딩 윈도우
 # 문제의 핵심은 과일이 두 종류를 초과 안됨
 # 오른쪽 포인터를 이동하면서 과일을 추가하고,
@@ -21,6 +22,8 @@ for windowSize in range(1, len(fruitList) + 1):  # 1~탕후루길이
 # 맨 마지막이 가장 긴 리스트임
 print(len(answerList[-1]))
 '''
+from os import remove
+
 '''
 # 투포인터를 활용하여 시간복잡도 O(N log N)
 n = int(input())
@@ -53,25 +56,28 @@ for right in range(n):
 
 print(maxLen)
 '''
+#2 -> 슬라이딩윈도우
 n = int(input())
-tanghuru = list(map(int, input().split()))
+fruitList = list(map(int, input().split()))
+fruitDict = {}
 
 left = 0
-fruitCntDict = {}
-maxTanghuruLen = 0
+maxLen = 0
 
 for right in range(n):
-    curFruit = tanghuru[right]
-    fruitCntDict[curFruit] = fruitCntDict.get(curFruit, 0) + 1
+    # 계속 오른쪽으로 확장하는 경우
+    curFruit = fruitList[right]
+    fruitDict[curFruit] = fruitDict.get(curFruit, 0) + 1
 
-    while len(fruitCntDict) > 2:
-        fruitRemove = tanghuru[left]
-        fruitCntDict[fruitRemove] -= 1
-        if fruitCntDict[fruitRemove] == 0:
-            del fruitCntDict[fruitRemove]
-
+    # 과일 개수가 2개를 초과하면 왼쪽 축소
+    while len(fruitDict) > 2:
+        removeFruit = fruitList[left]
+        fruitDict[removeFruit] -= 1
+        if fruitDict[removeFruit] == 0:
+            del fruitDict[removeFruit]
         left += 1
 
-    maxTanghuruLen = max(maxTanghuruLen, right - left + 1)
+    maxLen = max(maxLen, right - left + 1)
+    # 2개 이상이면 다시 오른쪽으로 확장하러
 
-print(maxTanghuruLen)
+print(maxLen)
