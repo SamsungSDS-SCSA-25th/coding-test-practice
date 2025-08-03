@@ -1,5 +1,5 @@
 # 그래프 탐색 - > BFS
-# 8방향 행렬로 패딩
+# nxtCol, nxtRow를 계속해서 갱신하면됨 -> 즉 경계값을 없애기
 
 from collections import deque
 
@@ -17,9 +17,6 @@ def bfs(startCol, startRow):
             if 0<=nxtCol<m and 0<=nxtRow<n and not visitedMatrix[nxtRow][nxtCol]:
                 q.append((nxtCol, nxtRow))
                 visitedMatrix[nxtRow][nxtCol] = True
-
-            if not (0<=nxtCol<m and 0<=nxtRow<n):
-                flag = False
 
     return
 

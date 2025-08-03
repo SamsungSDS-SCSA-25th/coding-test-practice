@@ -1,23 +1,22 @@
-# 둘레의 길이 구하는 아이디어?
-## dxdy 기법으로 1의 값을 가지고 있으면서, 4방향 중 하나라도 0이거나 외곽이면 카운트
+# 4방향 델타로 0이나 범위초과이면 둘레로 간주
 
-moveList = [(1,0),(0,1),(-1,0),(0,-1)]
+DIRECTIONS = [(1,0),(-1,0),(0,1),(0,-1)]
 
 n = int(input())
-paperMatrix = [ [0]*100 for _ in range(100) ]
-for _ in range(n):
-    x, y = map(int, input().split())
-    for row in range(y,y+10):
-        for col in range(x,x+10):
-            paperMatrix[row][col] += 1
+xyList = [ tuple(map(int, input().split())) for _ in range(n) ]
+paper = [ [0]*100 for _ in range(100) ]
+for x, y in xyList:
+    for tempRow in range(y, y+10):
+        for tempCol in range(x, x+10):
+            paper[tempRow][tempCol] = 1
 
-cnt = 0
+roundLen = 0
 for row in range(100):
     for col in range(100):
-        if paperMatrix[row][col] >= 1: # (D) 2개 이상 겹친 부분도 둘레가 될 수 있었음
-            for dx, dy in moveList:
+        if paper[row][col] == 1:
+            for dx, dy in DIRECTIONS:
                 nxtCol, nxtRow = col + dx, row + dy
-                if nxtCol < 0 or nxtCol >= 100 or nxtRow < 0 or nxtRow >= 100 or paperMatrix[nxtRow][nxtCol] == 0: # 테두리 확인
-                    cnt += 1
+                if not (0<=nxtCol<100 and 0<=nxtRow<100 and paper[nxtRow][nxtCol] == 1):
+                    roundLen += 1
 
-print(cnt)
+print(roundLen)
