@@ -8,67 +8,55 @@
 from collections import deque
 
 def bfs(startNode):
-    global adjMatrix, parent, depth, n
+    global adjMatrix, n, depth, parent
     q = deque([startNode])
 
     while q:
         curNode = q.popleft()
         for nxtNode in adjMatrix[curNode]:
-            if nxtNode == parent[curNode]: # 이미 등록된 경우?
+            if nxtNode == parent[curNode]: # 부모를 다시만나면 중지
                 continue
+
             q.append(nxtNode)
-            parent[nxtNode] = curNode # nxt(부모) - cur(자식)
-            depth[nxtNode] = depth[curNode] + 1 # 자식노드는 depth가 하나 아래
+            parent[nxtNode] = curNode # nxt은 부모는 cur
+            depth[nxtNode] = depth[curNode] + 1 # nxt로 갈수록 트리 깊이 깊어짐
 
     return
 
-t = int(input())
-for _ in range(t):
+tc = int(input())
+for i in range(1, tc+1):
     n = int(input())
+
     adjMatrix = [ [] for _ in range(n+1) ]
-    isChild = [False] * (n+1)
-
-    for idx in range(n-1):
-        node1, node2 = map(int, input().split())
-        adjMatrix[node2].append(node1) # 트리는 방향이 없음
+    isChild = [False] * (n + 1)
+    for _ in range(n-1):
+        node1, node2 = map(int, input().split()) # node1 부모 / node2 자식
         adjMatrix[node1].append(node2)
-        isChild[node2] = True # node1이 부모, node2가 자식 -> False면 부모가 없음
-
-    # (D) 루트는 한 번도 자식으로 등장하지 않은 노드
-    for idx in range(1, n + 1): # temp용인 0 idx는 생략
-        if not isChild[idx]:
-            rootNode = idx
-            break
+        adjMatrix[node2].append(node1)
+        isChild[node2] = True # isChild에 False인 것이 루트노드
 
     targetNode1, targetNode2 = map(int, input().split())
 
-    # print(adjMatrix)
+    # 루트 노드는?
+    for node in range(1, n+1):
+        if not isChild[node]:
+            rootNode = node
+    # print(rootNode)
 
     parent = [0] * (n+1)
     depth = [0] * (n+1)
-    # visited = [False] * (n+1) -> 트리라 방문행렬 필요없음
 
+    # print('x')
     bfs(rootNode)
 
+    while depth[targetNode1] > depth[targetNode2]: # targetNode1이 더 깊어서 쳐내야함
+        targetNode1 = parent[targetNode1]
+    while depth[targetNode1] < depth[targetNode2]: # targetNode2가 더 깊어서 쳐내야함
+        targetNode2 = parent[targetNode2]
 
-    # 깊이 맞추기
-    diff = depth[targetNode1] - depth[targetNode2]
-    if diff > 0: # node1이 더 깊음
-        for _ in range(diff):
-            parentNode1 = parent[targetNode1]
-            targetNode1 = parentNode1
-
-    elif diff < 0: # node1이 더 깊음
-        for _ in range(diff):
-            parentNode2 = parent[targetNode2]
-            targetNode2 = parentNode2
-
-    # 동시에 부모로 올라가며 공통 조상 찾기
-    while targetNode1 != targetNode2:
+    # 위에서 depth가 같은 곳에서 부모노드가 같으면 아래 실행 x
+    while targetNode1 != targetNode2: # 위에서 깊이 서로 맞추고 이제 올라가기
         targetNode1 = parent[targetNode1]
         targetNode2 = parent[targetNode2]
 
-
-
-
-
+    print(targetNode1)
