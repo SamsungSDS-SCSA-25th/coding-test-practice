@@ -1,21 +1,24 @@
 # bfs를 사용해서 해당 노드의 parent 리스트를 구한다
 # 두 노드의 parent 리스트를 root 노드까지 탐색한 뒤, 가장 앞쪽에 공통 숫자를 출력
-# A가 B의 부모라는 뜻
+## 위 방법 메모리초과 뜬다...
+# 다른 아이디어??? -> LCA 방법이 있다고 한다.
+# depth를 기록하고 같은 depth로 하나씩 올리고 두 숫자의 값이 같으면 된다.
+### "트리는 사이클이 없어서 방문행렬 필요없음"
 
 from collections import deque
 
 def bfs(startNode):
-    global adjMatrix, visited, parent, n
+    global adjMatrix, parent, depth, n
     q = deque([startNode])
-    visited[startNode] = True
 
     while q:
         curNode = q.popleft()
         for nxtNode in adjMatrix[curNode]:
-            if not visited[nxtNode]:
-                q.append(nxtNode)
-                visited[nxtNode] = True
-                parent[nxtNode] = curNode # nxt(부모) - cur(자식)
+            if nxtNode == parent[curNode]: # 이미 등록된 경우?
+                continue
+            q.append(nxtNode)
+            parent[nxtNode] = curNode # nxt(부모) - cur(자식)
+            depth[nxtNode] = depth[curNode] + 1 # 자식노드는 depth가 하나 아래
 
     return
 
@@ -42,38 +45,30 @@ for _ in range(t):
     # print(adjMatrix)
 
     parent = [0] * (n+1)
-    visited = [False] * (n+1)
+    depth = [0] * (n+1)
+    # visited = [False] * (n+1) -> 트리라 방문행렬 필요없음
 
     bfs(rootNode)
 
-    # print(parent)
 
-    parentList1, parentList2 = [], [] # 두개의 교집합이 있으면 break
-    parentList1.append(targetNode1)
-    parentList2.append(targetNode2)
-    while True:
-        tempParent1 = parent[targetNode1]
-        parentList1.append(tempParent1)
-        targetNode1 = tempParent1
-        if tempParent1 == rootNode:
-            break
+    # 깊이 맞추기
+    diff = depth[targetNode1] - depth[targetNode2]
+    if diff > 0: # node1이 더 깊음
+        for _ in range(diff):
+            parentNode1 = parent[targetNode1]
+            targetNode1 = parentNode1
 
-    while True:
-        tempParent2 = parent[targetNode2]
-        parentList2.append(tempParent2)
-        targetNode2 = tempParent2
-        if tempParent2 == rootNode:
-            break
+    elif diff < 0: # node1이 더 깊음
+        for _ in range(diff):
+            parentNode2 = parent[targetNode2]
+            targetNode2 = parentNode2
 
-    # print(f'{parentList1}, {parentList2}')
-    flag = False
-    for parent1 in parentList1:
-        for parent2 in parentList2:
-            if parent1 == parent2:
-                answer = parent1
-                flag = True
-                break
-        if flag:
-            break
+    # 동시에 부모로 올라가며 공통 조상 찾기
+    while targetNode1 != targetNode2:
+        targetNode1 = parent[targetNode1]
+        targetNode2 = parent[targetNode2]
 
-    print(answer)
+
+
+
+
