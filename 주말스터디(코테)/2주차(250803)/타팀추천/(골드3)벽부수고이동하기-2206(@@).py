@@ -2,7 +2,7 @@
 # 시작하는 칸과 끝나는 칸도 포함해서 센다.
 # 만약에 이동하는 도중에 한 개의 벽을 부수고 이동하는 것이 좀 더 경로가 짧아진다면, 벽을 한 개 까지 부수고 이동하여도 된다.
 ## 완전 탐색으로 0을 하나씩 1로 바꾼다 -> 그 후 bfs 진행
-
+''' # 완전탐색 -> 시간초과
 from collections import deque
 
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -57,3 +57,38 @@ for row in range(n):
             matrix[row][col] = 1 # 원상복귀
 
 print(minMove)
+'''
+### 아이디어: visited를 3차원으로 구성한다.
+from collections import deque
+
+DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+def bfs(startCol, startRow):
+    global visited3d, matrix, n, m
+    q = deque([(startCol, startRow, 0, 1)]) # 열, 행, 벽부쉈는지, 거리
+    visited3d[startRow][startCol][0] = True
+
+    while q:
+        curCol, curRow, broke, curMove = q.popleft()
+        if curCol == m-1 and curRow == n-1:
+            return curMove # 도달
+
+        for dx, dy in DIRECTIONS:
+            nxtCol, nxtRow, nxtMove = curCol + dx, curRow + dy, curMove + 1
+            if 0<=nxtCol<m and 0<=nxtRow<n:
+                if not visited3d[nxtRow][nxtCol][broke] and matrix[nxtRow][nxtCol] == 0:
+                    visited3d[nxtRow][nxtCol][broke] = True
+                    q.append((nxtCol, nxtRow, broke, nxtMove))
+
+                if broke == 0 and matrix[nxtRow][nxtCol] == 1 and not visited3d[nxtRow][nxtCol][1]:
+                    visited3d[nxtRow][nxtCol][1] = True
+                    q.append((nxtCol, nxtRow, 1, nxtMove))
+
+    return -1  # 도달 불가
+
+# 입력
+n, m = map(int, input().split())
+matrix = [list(map(int, list(input().strip()))) for _ in range(n)]
+
+visited3d = [[[False]*2 for _ in range(m)] for _ in range(n)]
+print(bfs(0, 0))
