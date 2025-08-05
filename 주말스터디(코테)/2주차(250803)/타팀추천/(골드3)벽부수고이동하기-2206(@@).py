@@ -59,36 +59,38 @@ for row in range(n):
 print(minMove)
 '''
 ### 아이디어: visited를 3차원으로 구성한다.
+# broke | 0: 벽부수기 가능 1: 불가
 from collections import deque
 
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-
 def bfs(startCol, startRow):
-    global visited3d, matrix, n, m
-    q = deque([(startCol, startRow, 0, 1)]) # 열, 행, 벽부쉈는지, 거리
+    global matrix, visited3d, n, m
+    q = deque([(startCol, startRow, 0, 1)])
     visited3d[startRow][startCol][0] = True
 
     while q:
-        curCol, curRow, broke, curMove = q.popleft()
+        curCol, curRow, broke, curDist = q.popleft()
         if curCol == m-1 and curRow == n-1:
-            return curMove # 도달
+            return curDist
 
         for dx, dy in DIRECTIONS:
-            nxtCol, nxtRow, nxtMove = curCol + dx, curRow + dy, curMove + 1
+            nxtCol, nxtRow, nxtDist = curCol + dx, curRow + dy, curDist + 1
             if 0<=nxtCol<m and 0<=nxtRow<n:
-                if not visited3d[nxtRow][nxtCol][broke] and matrix[nxtRow][nxtCol] == 0:
+                if not visited3d[nxtRow][nxtCol][broke] and matrix[nxtRow][nxtCol] == 0: # 일반적으로
+                    q.append((nxtCol, nxtRow, broke, nxtDist))
                     visited3d[nxtRow][nxtCol][broke] = True
-                    q.append((nxtCol, nxtRow, broke, nxtMove))
 
-                if broke == 0 and matrix[nxtRow][nxtCol] == 1 and not visited3d[nxtRow][nxtCol][1]:
+                if not broke and matrix[nxtRow][nxtCol] == 1 and not visited3d[nxtRow][nxtCol][1]:
+                    # 벽을 부수고 전환
+                    q.append((nxtCol, nxtRow, 1, nxtDist))
                     visited3d[nxtRow][nxtCol][1] = True
-                    q.append((nxtCol, nxtRow, 1, nxtMove))
 
-    return -1  # 도달 불가
+    # 도착지까지 방문 못한 경우
+    return -1
 
-# 입력
 n, m = map(int, input().split())
-matrix = [list(map(int, list(input().strip()))) for _ in range(n)]
+matrix = [ list(map(int, list(input().rstrip()))) for _ in range(n) ]
+visited3d = [ [ [False]*2 for _ in range(m) ] for _ in range(n) ]
 
-visited3d = [[[False]*2 for _ in range(m)] for _ in range(n)]
-print(bfs(0, 0))
+answer = bfs(0, 0)
+print(answer)
