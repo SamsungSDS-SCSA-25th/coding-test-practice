@@ -106,54 +106,44 @@ DIRECTIONS = (
 
 # bfs 한번에 하기
 def bfs(startCol, startRow):
-    global visited, burnList
+    global w, h, matrix, burnList
     q = deque([])
-    ### q에 넣는 순서 중요!!!
     #1 불
-    for col, row in burnList:
-        q.append((col, row, 0, '*'))
-
+    q.extend((burnList))
     #2 상근이
     q.append((startCol, startRow, 0, '@'))
-    # visited[startRow][startCol] = True
 
     while q:
         curCol, curRow, curSec, curState = q.popleft()
-        # print(f'{curCol},{curRow},{curSec},{curState}')
-
+        # print(f'{curCol=} {curRow=} {curSec=} {curState=}')
+        # print(matrix)
         for dx, dy in DIRECTIONS:
             nxtCol, nxtRow, nxtSec = curCol + dx, curRow + dy, curSec + 1
-            # print(matrix)
-            if curState == '@' and not (0 <= nxtCol < m and 0 <= nxtRow < n):
+            if not (0<=nxtCol<w and 0<=nxtRow<h) and curState == '@':
                 return nxtSec
 
-            if 0<=nxtCol<m and 0<=nxtRow<n:
-                if curState == '@':
-                    if matrix[nxtRow][nxtCol] == '.': # (D) @은 또 방문하지 않는다 !!!
-                    # if matrix[nxtRow][nxtCol] == '.' and not visited[nxtRow][nxtCol]:
-                        q.append((nxtCol, nxtRow, nxtSec, '@'))
-                        # visited[nxtRow][nxtCol] = True
-                        matrix[nxtRow][nxtCol] = '@'
-
-                elif curState == '*' and matrix[nxtRow][nxtCol] in '.@':
+            if 0<=nxtCol<w and 0<=nxtRow<h:
+                if curState == '@' and matrix[nxtRow][nxtCol] == '.':
+                    q.append((nxtCol, nxtRow, nxtSec, '@'))
+                    matrix[nxtRow][nxtCol] = '@'
+                if curState == '*' and matrix[nxtRow][nxtCol] in '.@':
                     q.append((nxtCol, nxtRow, nxtSec, '*'))
                     matrix[nxtRow][nxtCol] = '*'
 
     return 'IMPOSSIBLE'
 
-
 tc = int(input())
-for i in range(1, tc+1):
-    m, n = map(int, input().split())
-    matrix = [ list(input()) for _ in range(n) ]
+for _ in range(tc):
+    w, h = map(int, input().split())
+    matrix = [ list(input().rstrip()) for _ in range(h) ]
 
-    # visited = [ [False]*m for _ in range(n) ]
     burnList = []
-    for row in range(n):
-        for col in range(m):
+    for row in range(h):
+        for col in range(w):
             if matrix[row][col] == '@':
                 startCol, startRow = col, row
             elif matrix[row][col] == '*':
-                burnList.append((col, row))
+                burnList.append((col, row, 0, '*'))
 
-    print(bfs(startCol, startRow))
+    answer = bfs(startCol, startRow)
+    print(answer)
