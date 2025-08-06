@@ -11,17 +11,14 @@ def dfs(curDepth, curRoom, curMoveSum):
         return
 
     #2 종료조건
-    if curDepth == N:
-        curMoveSum += matrix[curRoom][0]
+    if curDepth == N-1:
+        curMoveSum += matrix[curRoom][0] # 맨 마지막에는 1번방 비용 더하기
         minMove = min(minMove, curMoveSum)
         # print(f'{minMove=}')
         return
 
-    #3-1 세부조건
-    if curDepth == N-1: # 마지막 1번방만 더 들어가면 됨
-        dfs(curDepth+1, 0, curMoveSum + matrix[curRoom][0])
-    #3-2 하부재귀
-    for nxtRoom in range(1, N): # 1번방 제외하고 돌기
+    #3 하부재귀
+    for nxtRoom in range(N):
         if not visited[nxtRoom] and curRoom != nxtRoom: # curRoom != nxtRoom
             visited[nxtRoom] = True
             dfs(curDepth + 1, nxtRoom, curMoveSum + matrix[curRoom][nxtRoom])
