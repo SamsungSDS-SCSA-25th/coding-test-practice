@@ -14,20 +14,20 @@ def backTracking(curRow):
         return
     # 재귀
     for curCol in range(N):
-        if not visitedCol[curCol] and not visitedRightUp[curCol+curRow] and not visitedLeftUP[curCol-curRow+(N-1)]:
+        if not visitedCol[curCol] and not visitedRightUp[curCol+curRow] and not visitedLeftUP[curCol-curRow]:
             visitedCol[curCol] = True
             visitedRightUp[curCol+curRow] = True
-            visitedLeftUP[curCol-curRow+(N-1)] = True
+            visitedLeftUP[curCol-curRow] = True
             backTracking(curRow + 1)
             visitedCol[curCol] = False
             visitedRightUp[curCol + curRow] = False
-            visitedLeftUP[curCol - curRow + (N - 1)] = False
+            visitedLeftUP[curCol - curRow] = False
 
 
 N = int(input())
 visitedCol = [False] * (N*N)
 visitedRightUp = [False] * (2*N-1)
-visitedLeftUP = [False] * (2*N-1) # 인덱스 유의
+visitedLeftUP = [False] * (2*N-1) # 인덱스 유의 -> 파이썬은 음수인덱스도 자동으로 된다
 
 answer = 0
 backTracking(0)
