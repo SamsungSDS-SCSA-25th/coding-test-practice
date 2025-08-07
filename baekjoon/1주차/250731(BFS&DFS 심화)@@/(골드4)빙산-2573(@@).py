@@ -2,7 +2,7 @@
 # 빙산이 두덩이 이상되는 최소시간?
 # -> BFS로 탐색하면서, cnt 2번 될 때 curSec가 답이다
 # 0이 붙어 있는 것 만큼 감소함 -> matrix 업데이트 필요함
-
+''' #1
 from collections import deque
 
 DIRECTIONS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
@@ -69,3 +69,74 @@ while True:
     year += 1
 
 print(year)
+'''
+#2 -> 0과 닿은 면적 확인하고, 그 이후에 녹여야 함
+from collections import deque
+
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+def bfs(startCol, startRow):
+    global visited
+    q = deque([(startCol, startRow)])
+    visited[startRow][startCol] = True
+
+    while q:
+        curCol, curRow = q.popleft()
+        for dx, dy in DIRECTIONS:
+            nxtCol, nxtRow = curCol + dx, curRow + dy
+            if 0<=nxtCol<M and 0<=nxtRow<N and matrix[nxtRow][nxtCol] > 0 and not visited[nxtRow][nxtCol]:
+                q.append((nxtCol, nxtRow))
+                visited[nxtRow][nxtCol] = True
+
+    return
+
+
+N, M = map(int, input().split())
+matrix = [ list(map(int, input().split())) for _ in range(N) ]
+
+year = 0
+while True:
+
+    year += 1
+
+    # 0 빙산 좌표 구하기
+    icedList = []
+    for row in range(N):
+        for col in range(M):
+            if matrix[row][col] > 0: # (D) 단순히 빙산 좌표 구할때는 visited 쓰면 안됨
+                icedList.append([col, row])
+
+    # 1 0과 닿은 면적 확인
+    for iceIdx, [col, row] in enumerate(icedList):
+        tempCnt = 0
+        for dx, dy in DIRECTIONS:
+            nxtCol, nxtRow = col + dx, row + dy
+            if 0 <= nxtCol < M and 0 <= nxtRow < N and matrix[nxtRow][nxtCol] == 0:
+                tempCnt += 1
+        icedList[iceIdx].append(tempCnt)
+
+    # 2 녹이기
+    # print(f'{icedList=}')
+    for col, row, melt in icedList:
+        matrix[row][col] -= melt
+        matrix[row][col] = max(0, matrix[row][col])  # 최하한선은 0
+
+    # 3 빙산이 두개 이상인지 확인
+    visited = [[False] * M for _ in range(N)]
+    icedCnt = 0
+    for row in range(N):
+        for col in range(M):
+            if matrix[row][col] > 0 and not visited[row][col]:
+                bfs(col, row)
+                icedCnt += 1
+
+    # 빙산이 2개 이상으로 갈라진다면
+    if icedCnt >= 2:
+        answer = year
+        break
+
+    # 전부다 0이라서 icedCnt 할 것이 없음...
+    if icedCnt == 0:
+        answer = 0
+        break
+
+print(answer)
