@@ -1,40 +1,61 @@
-# 색이 없는 곳으로만 이동가능
-# 대각행렬 2개 + 색칠한부분 -> visited 3개
-# 백트래킹 row 기준으로 아래로 내려가기 -> col은 row가 증가해도 모두 방문해볼 수 있도록 설계
+## 시간초과 이슈로 고민하다가
+### 흑 + 백을 나눠서 /2 만큼 시간복잡도 줄임
 
 N = int(input())
-matrix = [list(map(int, input().split())) for _ in range(N)]
+matrix = [ list(map(int, input().split())) for _ in range(N)]
 
 # 놓을 수 있는 칸(True) / 막힌 칸(False)
 visitedColor = [[matrix[row][col] == 1 for col in range(N)] for row in range(N)]
 # 대각선 검사
-visitedLU = [False] * (2*N)  # '\'
-visitedRU = [False] * (2*N)  # '/'
+visitedLU = [False] * (2*N)  # '\' 대각선
+visitedRU = [False] * (2*N)  # '/' 대각선
 
-maxBishops = 0
-def backTracking(idx, cnt):
-    global maxBishops
-    # 종료조건
-    if idx == N*N:
-        if cnt > maxBishops:
-            maxBishops = cnt
-        return
+def solve(parity):
+    """
+    parity==0: (row+col)%2==0인 흑 칸만,
+    parity==1: (row+col)%2==1인 백 칸만
+    백트래킹한 뒤 가능한 최대 비숍 수를 반환
+    """
+    maxB = 0
+    def backTracking(idx, cnt):
+        nonlocal maxB
+        if idx == N*N:
+            maxB = max(maxB, cnt)
+            return
 
-    curCol = idx % N
-    curRow = idx // N
-    # 2) (curCol, curRow)에 비숍 놓을 수 있으면 놓기 -> 놓을 수 있는 칸 True
-    if visitedColor[curRow][curCol] and not visitedLU[curCol - curRow + (N-1)] and not visitedRU[curCol + curRow]:
-        visitedLU[curCol - curRow + (N-1)] = True
-        visitedRU[curCol + curRow]     = True
+        curRow = idx // N
+        curCol = idx % N
 
-        backTracking(idx + 1, cnt + 1)
+        # 이 칸이 내 parity와 다르면, 그냥 다음 칸으로 -> 서로 다른 색끼리는 충돌 x
+        # 흑칸이 둘 수 있는 최댓값 + 백칸이 둘 수 있는 최댓값 => 전체 최댓값
+        if (curRow + curCol) % 2 != parity:
+            backTracking(idx + 1, cnt)
+            return
 
-        visitedLU[curCol - curRow + (N-1)] = False
-        visitedRU[curCol + curRow]     = False
+        # 놓을 수 있으면 놓기
+        lu = curCol - curRow
+        ru = curCol + curRow
+        if visitedColor[curRow][curCol] and not visitedLU[lu] and not visitedRU[ru]:
+            visitedLU[lu] = True
+            visitedRU[ru] = True
 
-    # 3) 놓지 않는 경우
-    backTracking(idx + 1, cnt)
+            backTracking(idx + 1, cnt + 1)
 
-# 시작
-backTracking(0, 0)
-print(maxBishops)
+            visitedLU[lu] = False
+            visitedRU[ru] = False
+
+        # 놓지 않는 경우
+        backTracking(idx + 1, cnt)
+
+    backTracking(0, 0)
+    return maxB
+
+ansBlack = solve(0) # 흑 탐색
+
+# visited 대각선 리셋
+visitedLU = [False] * (2*N)
+visitedRU = [False] * (2*N)
+
+ansWhite = solve(1) # 백 탐색
+
+print(ansBlack + ansWhite)
