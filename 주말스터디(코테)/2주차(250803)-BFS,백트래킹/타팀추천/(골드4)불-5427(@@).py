@@ -90,6 +90,7 @@ for _ in range(t):
 
     print(answer)
 '''
+'''
 # BFS의 특징을 활용해서 한번에 푼다
 # 1. *에서 1초 지났을때 큐에서 빼고 넣기, 2. 상근이가 이동할 수 있는 곳으로 가기 -> 재귀하지 않아 같이해도 괜찮다
 # (col, row, sec, state)로 저장
@@ -146,4 +147,59 @@ for _ in range(tc):
                 burnList.append((col, row, 0, '*'))
 
     answer = bfs(startCol, startRow)
+    print(answer)
+'''
+#3 -> 매번 불이 퍼지는 시간
+from collections import deque
+
+DIRECTIONS = [(1,0), (-1,0), (0,1), (0,-1)]
+def bfs(startCol, startRow, burnList):
+    global N, M
+    q = deque([])
+    burnV = [ [False]*M for _ in range(N) ]
+    humanV = [ [False]*M for _ in range(N) ]
+
+    # 불 -> 불부터 넣어야 bfs 중에 사람이 불에 가지 않음 (bfs의 장점)
+    for col, row in burnList:
+        q.append((col, row, '*', 0))
+        burnV[row][col] = True
+
+    # 사람
+    q.append((startCol, startRow, '@', 0))
+    humanV[startRow][startCol] = True
+
+    while q:
+        curCol, curRow, curState, curSec = q.popleft()
+        for dx, dy in DIRECTIONS:
+            nxtCol, nxtRow, nxtSec = curCol + dx, curRow + dy, curSec + 1
+            if not (0<=nxtCol<M and 0<=nxtRow<N) and curState == '@':
+                return nxtSec
+
+            if 0<=nxtCol<M and 0<=nxtRow<N:
+                # 불이 이동하는 경우
+                if curState == '*' and not burnV[nxtRow][nxtCol] and matrix[nxtRow][nxtCol] in '.@':
+                    q.append((nxtCol, nxtRow, '*', nxtSec))
+                    burnV[nxtRow][nxtCol] = True
+                # 사람이 이동하는 경우
+                if curState == '@' and not burnV[nxtRow][nxtCol] and not humanV[nxtRow][nxtCol] and matrix[nxtRow][nxtCol] in '.':
+                    q.append((nxtCol, nxtRow, '@', nxtSec))
+                    humanV[nxtRow][nxtCol] = True
+
+    return 'IMPOSSIBLE'
+
+
+tc = int(input())
+for _ in range(tc):
+    M, N = map(int, input().split())
+    matrix = [ list(input().rstrip()) for _ in range(N) ]
+
+    burnXYList = []
+    for row in range(N):
+        for col in range(M):
+            if matrix[row][col] == '@':
+                startCol, startRow = col, row
+            elif matrix[row][col] == '*':
+                burnXYList.append((col, row))
+
+    answer = bfs(startCol, startRow, burnXYList)
     print(answer)
